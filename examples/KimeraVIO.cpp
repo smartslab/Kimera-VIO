@@ -22,7 +22,9 @@
 #include <utility>
 
 #include "kimera-vio/dataprovider/EurocDataProvider.h"
+#include "kimera-vio/dataprovider/OakdDataProvider.h"
 #include "kimera-vio/dataprovider/KittiDataProvider.h"
+#include "kimera-vio/dataprovider/LiveDataProvider.h"
 #include "kimera-vio/frontend/StereoImuSyncPacket.h"
 #include "kimera-vio/logging/Logger.h"
 #include "kimera-vio/pipeline/MonoImuPipeline.h"
@@ -71,6 +73,12 @@ int main(int argc, char* argv[]) {
     case 1: {
       dataset_parser = std::make_unique<VIO::KittiDataProvider>();
     } break;
+    case 2: {
+      dataset_parser = std::make_unique<VIO::OakdDataProvider>(vio_params);
+    } break;
+    case 3: {
+      dataset_parser = std::make_unique<VIO::LiveDataProvider>(vio_params);
+    } break;
     default: {
       LOG(FATAL) << "Unrecognized dataset type: " << FLAGS_dataset_type << "."
                  << " 0: EuRoC, 1: Kitti.";
@@ -82,9 +90,11 @@ int main(int argc, char* argv[]) {
 
   switch (vio_params.frontend_type_) {
     case VIO::FrontendType::kMonoImu: {
+      //LOG(WARNING) << "Frontend type kMonoImu";
       vio_pipeline = std::make_unique<VIO::MonoImuPipeline>(vio_params);
     } break;
     case VIO::FrontendType::kStereoImu: {
+      //LOG(WARNING) << "Frontend type kStereoImu";
       vio_pipeline = std::make_unique<VIO::StereoImuPipeline>(vio_params);
     } break;
     default: {
@@ -100,8 +110,14 @@ int main(int argc, char* argv[]) {
       std::bind(&VIO::DataProviderInterface::shutdown, dataset_parser));
 
   // Register callback to vio pipeline.
-  dataset_parser->registerImuSingleCallback(std::bind(
-      &VIO::Pipeline::fillSingleImuQueue, vio_pipeline, std::placeholders::_1));
+  
+  if (FLAGS_dataset_type == 4){
+      dataset_parser->registerImuMultiCallback(std::bind(
+          &VIO::Pipeline::fillMultiImuQueue, vio_pipeline, std::placeholders::_1));
+  }else{
+      dataset_parser->registerImuSingleCallback(std::bind(
+          &VIO::Pipeline::fillSingleImuQueue, vio_pipeline, std::placeholders::_1));
+  }
   // We use blocking variants to avoid overgrowing the input queues (use
   // the non-blocking versions with real sensor streams)
   dataset_parser->registerLeftFrameCallback(std::bind(
@@ -122,6 +138,7 @@ int main(int argc, char* argv[]) {
   auto tic = VIO::utils::Timer::tic();
   bool is_pipeline_successful = false;
   if (vio_params.parallel_run_) {
+    //LOG(INFO) << "async spin for parser and pipeline";
     auto handle = std::async(
         std::launch::async, &VIO::DataProviderInterface::spin, dataset_parser);
     auto handle_pipeline =
@@ -138,6 +155,7 @@ int main(int argc, char* argv[]) {
     handle_shutdown.get();
     handle_pipeline.get();
   } else {
+    //LOG(INFO) << "while (dataset_parser->spin() && vio_pipeline->spin())";
     while (dataset_parser->spin() && vio_pipeline->spin()) {
       continue;
     };

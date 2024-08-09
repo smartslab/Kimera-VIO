@@ -1,0 +1,16 @@
+%YAML 1.0
+---
+T_BS:
+  cols: 4
+  data: [1.0, 0.0, 0.0, 0.0, 
+         0.0, 1.0, 0.0, 0.0, 
+         0.0, 0.0, 1.0, 0.0, 
+         0.0, 0.0, 0.0, 1.0]
+  rows: 4
+camera_id: right_cam
+camera_model: pinhole
+distortion_coefficients: [0.0,0.0,0.0,0.0,0.0]
+distortion_model: radtan
+intrinsics: [1071.5789794921875, 1072.369140625, 659.2884521484375, 399.24664306640625]
+rate_hz: 120
+resolution: [1280, 720]

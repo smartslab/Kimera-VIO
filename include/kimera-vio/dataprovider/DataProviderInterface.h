@@ -17,6 +17,7 @@
 #include <functional>
 #include <string>
 
+
 #include "kimera-vio/frontend/Camera.h"
 #include "kimera-vio/frontend/VisionImuFrontend-definitions.h"
 #include "kimera-vio/frontend/DepthFrame.h"
@@ -71,7 +72,7 @@ class DataProviderInterface {
   // Register a callback function for IMU data
   inline void registerImuSingleCallback(
       const ImuSingleInputCallback& callback) {
-    imu_single_callback_ = callback;
+    imu_single_callback_ = callback; 
   }
   inline void registerImuMultiCallback(const ImuMultiInputCallback& callback) {
     imu_multi_callback_ = callback;

@@ -107,6 +107,7 @@ EurocDataProvider::~EurocDataProvider() {
 
 /* -------------------------------------------------------------------------- */
 bool EurocDataProvider::spin() {
+  //LOG(INFO) << "EurocDataProvider::spin";
   if (dataset_parsed_) {
     if (!is_imu_data_sent_) {
       // First, send all the IMU data. The flag is to avoid sending it several
@@ -139,11 +140,13 @@ bool EurocDataProvider::spin() {
 }
 
 bool EurocDataProvider::hasData() const {
+  LOG(INFO) << "EurocDataProvider::hasData()";
   return current_k_ < final_k_;
 }
 
 /* -------------------------------------------------------------------------- */
 bool EurocDataProvider::spinOnce() {
+  //LOG(INFO) << "EurocDataProvider::spinOnce()";
   CHECK_LT(current_k_, std::numeric_limits<FrameId>::max())
       << "Are you sure you've initialized current_k_?";
   if (current_k_ >= final_k_) {
@@ -170,6 +173,7 @@ bool EurocDataProvider::spinOnce() {
   if (available_left_img && available_right_img) {
     // Both stereo images are available, send data to VIO
     CHECK(left_frame_callback_);
+    
     left_frame_callback_(
         std::make_unique<Frame>(current_k_,
                                 timestamp_frame_k,
@@ -844,6 +848,8 @@ bool MonoEurocDataProvider::spinOnce() {
   if (available_left_img) {
     // Both stereo images are available, send data to VIO
     CHECK(left_frame_callback_);
+    
+    
     left_frame_callback_(
         std::make_unique<Frame>(current_k_,
                                 timestamp_frame_k,

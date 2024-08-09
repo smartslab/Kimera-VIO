@@ -219,6 +219,9 @@ Mesher::Mesher(const MesherParams& mesher_params, const bool& serialize_meshes)
 MesherOutput::UniquePtr Mesher::spinOnce(const MesherInput& input) {
   MesherOutput::UniquePtr mesher_output_payload =
       std::make_unique<MesherOutput>(input.timestamp_);
+  
+  std::cout << "Mesher working on keyframe: " << input.backend_output_->cur_kf_id_ << "\n";
+  
   updateMesh3D(
       input,
       // TODO REMOVE THIS FLAG MAKE MESH_2D Optional!
@@ -235,6 +238,10 @@ MesherOutput::UniquePtr Mesher::spinOnce(const MesherInput& input) {
   getVerticesMesh(&(mesher_output_payload->vertices_mesh_));
   getPolygonsMesh(&(mesher_output_payload->polygons_mesh_));
   mesher_output_payload->mesh_3d_ = mesh_3d_;
+  
+  
+  
+  
   return mesher_output_payload;
 }
 
@@ -276,8 +283,9 @@ std::vector<cv::Vec6f> Mesher::computeDelaunayTriangulation(
   // do triangulation (z=zero-based, n=neighbors, Q=quiet, B=no boundary
   // markers)
   char parameters[] = "zneQB";
+  std::cout << in.numberofpointattributes << "-before " << std::endl;
   ::triangulate(parameters, &in, &out, NULL);
-
+  std::cout << in.numberofpointattributes << "-after " << std::endl;
   // put resulting triangles into vector tri
   // triangle structure is an array that holds the triangles 3 corners
   // Stores one point and the remainder in a counterclockwise order
@@ -1473,7 +1481,7 @@ void Mesher::updateMesh3D(const PointsWithIdMap& points_with_id_VIO,
                              keypoints_3d,
                              left_camera_pose,
                              &points_with_id_stereo);
-    VLOG(20) << "Number of stereo landmarks used for the mesh: "
+    VLOG(0) << "Number of stereo landmarks used for the mesh: "
              << points_with_id_stereo.size() << "\n"
              << "Number of VIO landmarks used for the mesh: "
              << points_with_id_VIO.size();
@@ -1482,7 +1490,7 @@ void Mesher::updateMesh3D(const PointsWithIdMap& points_with_id_VIO,
   }
   LOG_IF(WARNING, points_with_id_all->size() == 0u)
       << "Missing landmark information for the Mesher!";
-  VLOG(20) << "Total number of landmarks used for the mesh: "
+  VLOG(0) << "Total number of landmarks used for the mesh: "
            << points_with_id_all->size();
 
   // Build 2D mesh.
@@ -1508,8 +1516,13 @@ void Mesher::updateMesh3D(const PointsWithIdMap& points_with_id_VIO,
 
   // Calculate 3d mesh normals.
   if (FLAGS_compute_per_vertex_normals) mesh_3d_.computePerVertexNormals();
+  
 
-  VLOG(10) << "Finished updateMesh3D.";
+  //for (auto point : mesh_3d_){
+  //    std::cout << "X=" << point.x << " Y=" << point.y << " Z=" << point.z << "\n";
+  //}
+
+  VLOG(0) << "Finished updateMesh3D.";
 }
 
 /* -------------------------------------------------------------------------- */

@@ -306,7 +306,7 @@ TrackingStatusPose Tracker::geometricOutlierRejection2d2d(
     status_pose = std::make_pair(status, best_pose);
   }
 
-  VLOG(5) << "2D2D tracking " << (success ? " success " : " failure ") << ":\n"
+  VLOG(1) << "2D2D tracking " << (success ? " success " : " failure ") << ":\n"
           << "- Tracking Status: "
           << TrackerStatusSummary::asString(status_pose.first) << '\n'
           << "- Total Correspondences: " << f_ref.size() << '\n'

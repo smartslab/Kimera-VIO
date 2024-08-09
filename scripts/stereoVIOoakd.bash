@@ -2,12 +2,12 @@
 ###################################################################
 # Fill the variables below
 
-# Specify path of the EuRoC dataset.
+# Specify path of the Oakd dataset.
 # The path can be absolute, or relative to this file location.
-DATASET_PATH="/home/smartslab/Downloads/MH_01_easy"
+DATASET_PATH="/home/smartslab/uuv_ws/src/BlueROV-and-Simulations/Kimera_stuff/oak-d-data"
 
-# Specify: 0 to run on EuRoC data, 1 to run on Kitti (not supported)
-DATASET_TYPE=0
+# Specify: 0 to run on Oakd data, 1 to run on Kitti (not supported), 2 Oak-d
+DATASET_TYPE=2
 
 # Specify: 1 to enable the LoopClosureDetector, 0 to not.
 USE_LCD=0
@@ -24,8 +24,8 @@ LOG_OUTPUT=1
 BUILD_PATH="/home/smartslab/kimera_ws/build/kimera_vio"
 
 # Params path: specify where the parameters for Kimera are.
-PARAMS_PATH="../params/Euroc"
-# PARAMS_PATH="../params/EurocMono"  # use this for monocular-mode (left cam only)
+PARAMS_PATH="../params/oakd"
+# PARAMS_PATH="../params/OakdMono"  # use this for monocular-mode (left cam only)
 
 # Vocabulary path: specify where the vocabulary for loop closure is.
 VOCABULARY_PATH="../vocabulary"
@@ -50,7 +50,7 @@ else
         # Option -d, set dataset type
       -d) DATASET_TYPE=$2
           echo "Using dataset type: $DATASET_TYPE"
-          echo "0 is for euroc and 1 is for kitti"
+          echo "0 is for Oakd and 1 is for kitti"
           shift ;;
       -lcd) USE_LCD=1
            echo "Run VIO with LoopClosureDetector!" ;;
@@ -82,14 +82,14 @@ echo """ Launching:
 
  """
 
-# Execute stereoVIOEuroc with given flags.
+# Execute stereoVIOOakd with given flags.
 # The flag --help will provide you with information about what each flag
 # does.
-$BUILD_PATH/stereoVIOEuroc \
+$BUILD_PATH/stereoVIOoakd \
   --dataset_type="$DATASET_TYPE" \
-  --dataset_path="$DATASET_PATH" \
-  --initial_k=50 \
-  --final_k=10000 \
+  --oakd_dataset_path="$DATASET_PATH" \
+  --initial_t=50 \
+  --final_t=10000 \
   --params_folder_path="$PARAMS_PATH" \
   --use_lcd="$USE_LCD" \
   --vocabulary_path="$VOCABULARY_PATH/ORBvoc.yml" \
@@ -104,7 +104,7 @@ $BUILD_PATH/stereoVIOEuroc \
   --v=0 \
   --vmodule=Pipeline*=00 \
   --log_output="$LOG_OUTPUT" \
-  --log_euroc_gt_data=1 \
+  --log_oakd_gt_data=0 \
   --save_frontend_images=1 \
   --visualize_frontend_images=1 \
   --output_path="$OUTPUT_PATH"
@@ -112,5 +112,5 @@ $BUILD_PATH/stereoVIOEuroc \
 # If in debug mode, you can run gdb to trace problems.
 #export PARAMS_PATH=../params/Euroc
 #export DATASET_PATH=/home/tonirv/datasets/EuRoC/V1_01_easy
-#gdb --args ../build/stereoVIOEuroc --flagfile="$PARAMS_PATH/flags/stereoVIOEuroc.flags" --flagfile="$PARAMS_PATH/flags/Mesher.flags" --flagfile="$PARAMS_PATH/flags/VioBackend.flags" --flagfile="$PARAMS_PATH/flags/RegularVioBackend.flags" --flagfile="$PARAMS_PATH/flags/Visualizer3D.flags" --logtostderr=1 --colorlogtostderr=1 --log_prefix=0 --dataset_path="$DATASET_PATH" --params_folder_path="$PARAMS_PATH" --initial_k=50 --final_k=2000 --vocabulary_path="../vocabulary/ORBvoc.yml" --use_lcd="0" --v=0 --vmodule=VioBackend=0 --dataset_type="0" --log_output="0" --output_path="../output_logs/"
+#gdb --args ../build/stereoVIOEuroc --flagfile="$PARAMS_PATH/flags/stereoVIOEuroc.flags" --flagfile="$PARAMS_PATH/flags/Mesher.flags" --flagfile="$PARAMS_PATH/flags/VioBackend.flags" --flagfile="$PARAMS_PATH/flags/RegularVioBackend.flags" --flagfile="$PARAMS_PATH/flags/Visualizer3D.flags" --logtostderr=1 --colorlogtostderr=1 --log_prefix=0 --dataset_path="$DATASET_PATH" --params_folder_path="$PARAMS_PATH" --initial_t=50 --final_t=2000 --vocabulary_path="../vocabulary/ORBvoc.yml" --use_lcd="0" --v=0 --vmodule=VioBackend=0 --dataset_type="0" --log_output="0" --output_path="../output_logs/"
 

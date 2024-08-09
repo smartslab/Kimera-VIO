@@ -1,0 +1,28 @@
+imu0:
+  Acc:
+    avg-axis: {acc_n: 0.02679471463844395, acc_w: 0.0006011946430786817}
+    unit: ' m/s^2'
+    x-axis: {acc_n: 0.030218008396577636, acc_w: 0.0005007512811510455}
+    y-axis: {acc_n: 0.024690103027283757, acc_w: 0.0005274354115951917}
+    z-axis: {acc_n: 0.02547603249147047, acc_w: 0.0007753972364898079}
+  Gyr:
+    avg-axis: {gyr_n: 0.00034904440578685715, gyr_w: 1.0004503516775143e-06}
+    unit: ' rad/s'
+    x-axis: {gyr_n: 0.0004043665461903429, gyr_w: 1.0415676382380097e-06}
+    y-axis: {gyr_n: 0.00028410125918613125, gyr_w: 1.1405386516403241e-06}
+    z-axis: {gyr_n: 0.0003586654119840972, gyr_w: 8.192447651542091e-07}
+  T_i_b:
+  - [1.0, 0.0, 0.0, 0.0]
+  - [0.0, 1.0, 0.0, 0.0]
+  - [0.0, 0.0, 1.0, 0.0]
+  - [0.0, 0.0, 0.0, 1.0]
+  accelerometer_noise_density: 0.02679471463844395
+  accelerometer_random_walk: 0.0006011946430786817
+  gyroscope_noise_density: 0.00034904440578685715
+  gyroscope_random_walk: 1.0004503516775143e-06
+  model: calibrated
+  name: oakd
+  rostopic: /stereo_inertial_publisher2/imu
+  time_offset: 0.0
+  type: IMU
+  update_rate: 340.898

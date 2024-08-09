@@ -347,6 +347,7 @@ inline Mesh3D::VertexType convertVertex2dTo3d(const Mesh2D::VertexType& vtx_2d,
   auto norm = std::sqrt(vtx_position_2d.dot(vtx_position_2d));
   vtx_position_3d.x = vtx_position_3d.x / norm * 5;
   vtx_position_3d.y = vtx_position_3d.y / norm * 5;
+  
   // The important point is that we re-use the lmk ids, rather than position...
   return Mesh3D::VertexType(vtx_2d.getLmkId(),
                             vtx_position_3d,

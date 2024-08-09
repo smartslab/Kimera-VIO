@@ -113,7 +113,7 @@ RegularVioBackend::RegularVioBackend(
                  odom_params),
       regular_vio_params_(RegularVioBackendParams::safeCast(backend_params)) {
   LOG(INFO) << "Using Regular VIO Backend.\n";
-
+  log_level = 10;
   // Set type of mono_noise_ for generic projection factors.
   gtsam::SharedNoiseModel gaussian_dim_2 = gtsam::noiseModel::Isotropic::Sigma(
       2, regular_vio_params_.monoNoiseSigma_);
@@ -154,21 +154,21 @@ bool RegularVioBackend::addVisualInertialStateAndOptimize(
     std::optional<gtsam::Pose3> odometry_body_pose,
     std::optional<gtsam::Velocity3> odometry_vel) {
   debug_info_.resetAddedFactorsStatistics();
-
+  
   // Features and IMU line up --> do iSAM update.
   last_kf_id_ = curr_kf_id_;
   ++curr_kf_id_;
 
-  VLOG(7) << "Processing keyframe " << curr_kf_id_
+  VLOG(0) << "Processing keyframe " << curr_kf_id_
           << " at timestamp: " << UtilsNumerical::NsecToSec(timestamp_kf_nsec)
-          << " (nsec)\n";
+          << " (sec)\n";
 
   // Add initial guess.
   addStateValues(curr_kf_id_, status_smart_stereo_measurements_kf.first, pim);
 
   /////////////////// IMU FACTORS //////////////////////////////////////////////
   // Add imu factors between consecutive keyframe states.
-  VLOG(10) << "Adding IMU factor between pose id: " << last_kf_id_
+  VLOG(log_level) << "Adding IMU factor between pose id: " << last_kf_id_
            << " and pose id: " << curr_kf_id_;
   addImuFactor(last_kf_id_, curr_kf_id_, pim);
 
@@ -212,7 +212,7 @@ bool RegularVioBackend::addVisualInertialStateAndOptimize(
     case TrackingStatus::LOW_DISPARITY: {
       // Vehicle is not moving.
       VLOG(0) << "Tracker has a LOW_DISPARITY status.";
-      VLOG(10) << "Add zero velocity and no motion factors.";
+      VLOG(log_level) << "Add zero velocity and no motion factors.";
       addZeroVelocityPrior(curr_kf_id_);
       addNoMotionFactor(last_kf_id_, curr_kf_id_);
       // TODO why are we not adding the regularities here as well...?
@@ -231,7 +231,7 @@ bool RegularVioBackend::addVisualInertialStateAndOptimize(
 
       if (kfTrackingStatus_mono == TrackingStatus::VALID) {
         // Extract lmk ids that are involved in a regularity.
-        VLOG(10) << "Starting extracting lmk ids from set of planes...";
+        VLOG(log_level) << "Starting extracting lmk ids from set of planes...";
         LandmarkIds lmk_ids_with_regularity;
         switch (regular_vio_params_.backend_modality_) {
           case RegularBackendModality::STRUCTURELESS: {
@@ -277,14 +277,14 @@ bool RegularVioBackend::addVisualInertialStateAndOptimize(
             break;
           }
         }
-        VLOG(10) << "Finished extracting lmk ids from set of planes, total of "
+        VLOG(log_level) << "Finished extracting lmk ids from set of planes, total of "
                  << lmk_ids_with_regularity.size()
                  << " lmks with regularities.";
 
         // We add features in VIO.
-        VLOG(10) << "Starting adding/updating landmarks to graph...";
+        VLOG(log_level) << "Starting adding/updating landmarks to graph...";
         addLandmarksToGraph(lmks_kf, lmk_ids_with_regularity);
-        VLOG(10) << "Finished adding/updating landmarks to graph.";
+        VLOG(log_level) << "Finished adding/updating landmarks to graph.";
 
         // Convert all smart factors of lmks in time horizon that have
         // regularities to projection factors.
@@ -292,10 +292,10 @@ bool RegularVioBackend::addVisualInertialStateAndOptimize(
         // in addLandmarksToGraph, but here we also make sure we have converted
         // the ones with regularities in time horizon.
         if (FLAGS_convert_extra_smart_factors_to_proj_factors) {
-          VLOG(10)
+          VLOG(log_level)
               << "Starting converting extra smart factors to proj factors...";
           convertExtraSmartFactorToProjFactor(lmk_ids_with_regularity);
-          VLOG(10)
+          VLOG(log_level)
               << "Finished converting extra smart factors to proj factors...";
         }
 
@@ -311,18 +311,18 @@ bool RegularVioBackend::addVisualInertialStateAndOptimize(
           for (const Plane& plane : planes_) {
             const PlaneId& plane_key = plane.getPlaneSymbol().key();
 
-            VLOG(10) << "Adding regularity factors.";
+            VLOG(log_level) << "Adding regularity factors.";
             addRegularityFactors(
                 plane,
                 // Creates a new entry if the plane key was not found.
                 // So make sure you use [plane_key] instead of .at(plane_key).
                 &(plane_id_to_lmk_id_reg_type_[plane_key]),
                 &(idx_of_point_plane_factors_to_add[plane_key]));
-            VLOG(10) << "Finished adding regularity factors.";
+            VLOG(log_level) << "Finished adding regularity factors.";
           }
 
           if (FLAGS_remove_old_reg_factors) {
-            VLOG(10) << "Removing old regularity factors.";
+            VLOG(log_level) << "Removing old regularity factors.";
             gtsam::FactorIndices delete_old_regularity_factors;
             removeOldRegularityFactors_Slow(planes_,
                                             idx_of_point_plane_factors_to_add,
@@ -333,7 +333,7 @@ bool RegularVioBackend::addVisualInertialStateAndOptimize(
                                   delete_old_regularity_factors.begin(),
                                   delete_old_regularity_factors.end());
             }
-            VLOG(10) << "Finished removing old regularity factors.";
+            VLOG(log_level) << "Finished removing old regularity factors.";
           }
         } else {
           // TODO shouldn't we "removeOldRegularityFactors_Slow" because there
@@ -357,7 +357,7 @@ bool RegularVioBackend::addVisualInertialStateAndOptimize(
   if (odometry_body_pose && odom_params_ &&
       (odom_params_->betweenRotationPrecision_ > 0.0 ||
        odom_params_->betweenTranslationPrecision_ > 0.0)) {
-    VLOG(1) << "Added external factor between " << last_kf_id_ << " and "
+    VLOG(log_level) << "Added external factor between " << last_kf_id_ << " and "
             << curr_kf_id_;
     addBetweenFactor(last_kf_id_,
                      curr_kf_id_,
@@ -378,12 +378,12 @@ bool RegularVioBackend::addVisualInertialStateAndOptimize(
   // This lags 1 step behind to mimic hw.
   imu_bias_prev_kf_ = imu_bias_lkf_;
 
-  VLOG(10) << "Starting optimize...";
+  VLOG(log_level) << "Starting optimize...";
   bool is_smoother_ok = optimize(timestamp_kf_nsec,
                                  curr_kf_id_,
                                  backend_params_.numOptimize_,
                                  delete_slots);
-  VLOG(10) << "Finished optimize.";
+  VLOG(log_level) << "Finished optimize.";
 
   if (is_smoother_ok) {
     // Sanity check: ensure no one is removing planes outside
@@ -391,9 +391,9 @@ bool RegularVioBackend::addVisualInertialStateAndOptimize(
     CHECK_LE(nr_of_planes_, planes_.size());
 
     // Update estimates of planes, and remove planes that are not in the state.
-    VLOG(10) << "Starting updatePlaneEstimates...";
+    VLOG(log_level) << "Starting updatePlaneEstimates...";
     updatePlaneEstimates(&planes_);
-    VLOG(10) << "Finished updatePlaneEstimates.";
+    VLOG(log_level) << "Finished updatePlaneEstimates.";
     nr_of_planes_ = planes_.size();
 
     // Reset list of factors to delete.
@@ -402,7 +402,7 @@ bool RegularVioBackend::addVisualInertialStateAndOptimize(
     // and must be deleted from the factor graph.
     delete_slots_of_converted_smart_factors_.resize(0);
   }
-
+  std::cout << "End of Backend \n";
   return is_smoother_ok;
 }
 

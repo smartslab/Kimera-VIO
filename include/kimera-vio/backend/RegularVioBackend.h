@@ -48,6 +48,8 @@ class RegularVioBackend : public VioBackend {
       const gtsam::PreintegrationType& pim,
       std::optional<gtsam::Pose3> odometry_body_pose = std::nullopt,
       std::optional<gtsam::Velocity3> odometry_vel = std::nullopt) override;
+  
+  int log_level;
 
  private:
   typedef size_t Slot;

@@ -30,6 +30,15 @@ find_package(GTSAM_UNSTABLE REQUIRED)
 find_package(opengv REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(DBoW2 REQUIRED)
+find_package(depthai CONFIG REQUIRED)
+if(depthai_FOUND)
+message(WARNING "depthai FOUND, Version:" ${depthai_VERSION} " directory: " ${depthai_DIR})
+else()
+message(WARNING "depthai Not Found!")
+endif()
+
+
+
 if(NOT TARGET DBoW2::DBoW2)
   add_library(DBoW2::DBoW2 INTERFACE IMPORTED)
   set_target_properties(DBoW2::DBoW2 PROPERTIES
@@ -48,6 +57,7 @@ endif()
 
 ### External Dependencies
 include(ExternalProject)
+
 
 ### Download and unzip the vocabularly file
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/vocabulary/ORBvoc.yml)
@@ -124,19 +134,26 @@ add_subdirectory(src/imu-frontend)
 add_subdirectory(include/kimera-vio/visualizer)
 add_subdirectory(src/visualizer)
 
+
+
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
     opengv
     DBoW2::DBoW2
     KimeraRPGO
     triangle::triangle
+    depthai::opencv    
   PUBLIC
     ${OpenCV_LIBRARIES}
     ${GFLAGS_LIBRARIES}
     ${GLOG_LIBRARIES}
     gtsam
     gtsam_unstable
+    libnop 
+    depthai::opencv       
 )
+
+
 target_include_directories(${PROJECT_NAME}
   PUBLIC
     ${OpenCV_INCLUDE_DIRS}
@@ -145,6 +162,18 @@ target_include_directories(${PROJECT_NAME}
     ${GTSAM_INCLUDE_DIR}
     $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
     $<INSTALL_INTERFACE:include>
+    ${depthai_DIR}
+    /usr/include/opencv4
+    /home/smartslab/dai_ws/depthai-core/build
+    /home/smartslab/dai_ws/depthai-core/include
+    /home/smartslab/dai_ws/depthai-core/
+    /home/smartslab/dai_ws/depthai-core/shared/depthai-shared/include
+    /home/smartslab/dai_ws/depthai-core/shared/depthai-bootloader-shared/include
+    /home/smartslab/dai_ws/depthai-core/shared/depthai-shared/3rdparty
+    /home/smartslab/.hunter/_Base/16cc954/a3a48bb/d8f4da9/Install/include
+    /home/smartslab/dai_ws/depthai-core/build 
+    /home/smartslab/dai_ws/depthai-core/build/install/include
+    /home/smartslab/dai_ws/depthai-core/build/install/lib
 )
 
 # Pangolin is optional
@@ -172,13 +201,21 @@ target_compile_features(${PROJECT_NAME} PUBLIC
 # e.g. when testing
 add_library(kimera_vio::kimera_vio ALIAS kimera_vio)
 
+
 add_executable(stereoVIOEuroc ./examples/KimeraVIO.cpp)
+add_executable(stereoVIOoakd ./examples/KimeraVIO.cpp)
+add_executable(stereoVIOoakdLIVE ./examples/KimeraVIO.cpp)
+add_executable(OakdTest ./examples/OakdTest.cpp)
 target_link_libraries(stereoVIOEuroc PUBLIC kimera_vio::kimera_vio)
+target_link_libraries(stereoVIOoakd PUBLIC kimera_vio::kimera_vio)
+target_link_libraries(stereoVIOoakdLIVE PUBLIC kimera_vio::kimera_vio)
+target_link_libraries(OakdTest PUBLIC kimera_vio::kimera_vio)
 
 ############################### TESTS ##########################################
 ### Add testing
 option(KIMERA_BUILD_TESTS "Build tests" ON)
 if(KIMERA_BUILD_TESTS)
+  message(ERROR "Running the tests anyway. ")
   # Download and unpack googletest at configure time
   # TODO Consider doing the same for glog, gflags, although it might
   # make the command `cmake ..` a bit slow.
@@ -275,8 +312,19 @@ if(KIMERA_BUILD_TESTS)
     tests/testOnlineAlignment.cpp
     tests/testOpticalFlowPredictor.cpp
   )
-  target_include_directories(testKimeraVIO PUBLIC tests/include)
-  target_link_libraries(testKimeraVIO gtest gmock kimera_vio::kimera_vio)
+  target_include_directories(testKimeraVIO PUBLIC tests/include 
+    /usr/include/opencv4
+    /home/smartslab/dai_ws/depthai-core/include
+    /home/smartslab/dai_ws/depthai-core/
+    /home/smartslab/dai_ws/depthai-core/shared/depthai-shared/include
+    /home/smartslab/dai_ws/depthai-core/shared/depthai-bootloader-shared/include
+    /home/smartslab/dai_ws/depthai-core/shared/depthai-shared/3rdparty
+    /home/smartslab/.hunter/_Base/16cc954/a3a48bb/d8f4da9/Install/include
+    /home/smartslab/dai_ws/depthai-core/build 
+    /home/smartslab/dai_ws/depthai-core/build/install/include
+    /home/smartslab/dai_ws/depthai-core/build/install/lib
+    ${depthai_DIR})
+  target_link_libraries(testKimeraVIO gtest gmock kimera_vio::kimera_vio depthai::opencv libnop)
 
   include(GoogleTest)
   gtest_discover_tests(testKimeraVIO PRE_TEST)

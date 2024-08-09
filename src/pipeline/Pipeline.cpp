@@ -99,7 +99,7 @@ Pipeline::~Pipeline() {
 bool Pipeline::spin() {
   // Feed data to the pipeline
   CHECK(data_provider_module_);
-  LOG(INFO) << "Spinning Kimera-VIO.";
+  //LOG(INFO) << "Spinning Kimera-VIO.";
   return data_provider_module_->spin();
 }
 
@@ -177,7 +177,7 @@ bool Pipeline::waitForShutdown(const std::function<bool()>& data_done_cb,
     VLOG(5) << printStatus();
 
     // Print all statistics
-    LOG_IF(INFO, print_stats) << utils::Statistics::Print();
+    //LOG_IF(INFO, print_stats) << utils::Statistics::Print();
 
     // Time to sleep between queries to the queues [in milliseconds].
     std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time_ms));
@@ -336,6 +336,7 @@ void Pipeline::launchThreads() {
         &VioBackendModule::spin, CHECK_NOTNULL(vio_backend_module_.get()));
 
     if (mesher_module_) {
+      //LOG(WARNING) << "Making a mesher thread";
       mesher_thread_ = std::make_unique<std::thread>(
           &MesherModule::spin, CHECK_NOTNULL(mesher_module_.get()));
     }

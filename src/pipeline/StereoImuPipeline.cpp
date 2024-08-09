@@ -41,6 +41,8 @@ StereoImuPipeline::StereoImuPipeline(const VioParams& params,
                                      DisplayBase::UniquePtr&& displayer,
                                      PreloadedVocab::Ptr&& preloaded_vocab)
     : Pipeline(params), stereo_camera_(nullptr) {
+    
+  //LOG(WARNING) << "In StereoImuPipeline.cpp";
   //! Create Stereo Camera
   CHECK_EQ(params.camera_params_.size(), 2u)
       << "Need two cameras for StereoImuPipeline.";
@@ -150,6 +152,8 @@ StereoImuPipeline::StereoImuPipeline(const VioParams& params,
 
   if (static_cast<VisualizationType>(FLAGS_viz_type) ==
       VisualizationType::kMesh2dTo3dSparse) {
+    
+    //LOG(WARNING) << "Making mesher module";
     mesher_module_ = std::make_unique<MesherModule>(
         parallel_run_,
         MesherFactory::createMesher(
