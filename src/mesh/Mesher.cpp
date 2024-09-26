@@ -220,7 +220,8 @@ MesherOutput::UniquePtr Mesher::spinOnce(const MesherInput& input) {
   MesherOutput::UniquePtr mesher_output_payload =
       std::make_unique<MesherOutput>(input.timestamp_);
   
-  std::cout << "Mesher working on keyframe: " << input.backend_output_->cur_kf_id_ << "\n";
+  std::cout << "Mesher working on keyframe: " << input.backend_output_->cur_kf_id_ << "aka Frame " << input.frontend_output_->stereo_frame_lkf_.id_ << " with " << input.backend_output_->landmarks_with_id_map_.size() << " landmarks. \n";
+  
   
   updateMesh3D(
       input,

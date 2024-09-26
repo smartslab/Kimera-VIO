@@ -191,6 +191,7 @@ void Tracker::featureTracking(
   // max number of frames in which a feature is seen
   VLOG(5) << "featureTracking: frame " << cur_frame->id_
           << ",  Nr tracked keypoints: " << cur_frame->keypoints_.size()
+          << ",  Nr tracked landmarks: " << cur_frame->landmarks_.size()
           << " (max: " << feature_detector_params.max_features_per_frame_ << ")"
           << " (max observed age of tracked features: "
           << *std::max_element(cur_frame->landmarks_age_.begin(),
@@ -1049,10 +1050,18 @@ cv::Mat Tracker::getTrackerImage(const Frame& ref_frame,
       if (it != ref_frame.landmarks_.end()) {
         // If feature was in previous frame, display tracked feature with
         // green circle/line:
+        
         cv::circle(img_rgb, px_cur, 6, green, 1);
         int i = std::distance(ref_frame.landmarks_.begin(), it);
         const cv::Point2f& px_ref = ref_frame.keypoints_.at(i);
         cv::arrowedLine(img_rgb, px_ref, px_cur, green, 1);
+        //if (landmarks_map_.count(*it) != 0){
+        //    auto place = landmarks_map_.at(*it);
+        //    std::ostringstream stringStream;
+        //    stringStream << std::to_string(place(0)) << "," << std::to_string(place(1)) << "," << std::to_string(place(2)) << "\n";
+        //    std::string location = stringStream.str();
+        //    cv::putText(img_rgb, location, px_cur, cv::FONT_HERSHEY_SIMPLEX, 0.5, green, 1, cv::FILLED, false);
+         //   }
       } else {  // New feature tracks are blue.
         cv::circle(img_rgb, px_cur, 6, blue, 1);
       }

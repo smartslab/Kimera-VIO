@@ -172,8 +172,8 @@ target_include_directories(${PROJECT_NAME}
     /home/smartslab/dai_ws/depthai-core/shared/depthai-shared/3rdparty
     /home/smartslab/.hunter/_Base/16cc954/a3a48bb/d8f4da9/Install/include
     /home/smartslab/dai_ws/depthai-core/build 
-    /home/smartslab/dai_ws/depthai-core/build/install/include
-    /home/smartslab/dai_ws/depthai-core/build/install/lib
+    #/home/smartslab/dai_ws/depthai-core/build/install/include
+    #/home/smartslab/dai_ws/depthai-core/build/install/lib
 )
 
 # Pangolin is optional
