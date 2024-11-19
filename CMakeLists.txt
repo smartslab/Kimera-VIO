@@ -164,16 +164,16 @@ target_include_directories(${PROJECT_NAME}
     $<INSTALL_INTERFACE:include>
     ${depthai_DIR}
     /usr/include/opencv4
-    /home/smartslab/dai_ws/depthai-core/build
-    /home/smartslab/dai_ws/depthai-core/include
-    /home/smartslab/dai_ws/depthai-core/
-    /home/smartslab/dai_ws/depthai-core/shared/depthai-shared/include
-    /home/smartslab/dai_ws/depthai-core/shared/depthai-bootloader-shared/include
-    /home/smartslab/dai_ws/depthai-core/shared/depthai-shared/3rdparty
+    /home/smartslab/catkin_ws/depthai/depthai-core/build
+    /home/smartslab/catkin_ws/depthai/depthai-core/include
+    /home/smartslab/catkin_ws/depthai/depthai-core/
+    /home/smartslab/catkin_ws/depthai/depthai-core/shared/depthai-shared/include
+    /home/smartslab/catkin_ws/depthai/depthai-core/shared/depthai-bootloader-shared/include
+    /home/smartslab/catkin_ws/depthai/depthai-core/shared/depthai-shared/3rdparty
     /home/smartslab/.hunter/_Base/16cc954/a3a48bb/d8f4da9/Install/include
-    /home/smartslab/dai_ws/depthai-core/build 
-    #/home/smartslab/dai_ws/depthai-core/build/install/include
-    #/home/smartslab/dai_ws/depthai-core/build/install/lib
+    /home/smartslab/catkin_ws/depthai/depthai-core/build 
+    #/home/smartslab/catkin_ws/depthai/depthai-core/build/install/include
+    #/home/smartslab/catkin_ws/depthai/depthai-core/build/install/lib
 )
 
 # Pangolin is optional
@@ -203,13 +203,13 @@ add_library(kimera_vio::kimera_vio ALIAS kimera_vio)
 
 
 add_executable(stereoVIOEuroc ./examples/KimeraVIO.cpp)
-add_executable(stereoVIOoakd ./examples/KimeraVIO.cpp)
-add_executable(stereoVIOoakdLIVE ./examples/KimeraVIO.cpp)
-add_executable(OakdTest ./examples/OakdTest.cpp)
+#add_executable(stereoVIOoakd ./examples/KimeraVIO.cpp)
+#add_executable(stereoVIOoakdLIVE ./examples/KimeraVIO.cpp)
+#add_executable(OakdTest ./examples/OakdTest.cpp)
 target_link_libraries(stereoVIOEuroc PUBLIC kimera_vio::kimera_vio)
-target_link_libraries(stereoVIOoakd PUBLIC kimera_vio::kimera_vio)
-target_link_libraries(stereoVIOoakdLIVE PUBLIC kimera_vio::kimera_vio)
-target_link_libraries(OakdTest PUBLIC kimera_vio::kimera_vio)
+#target_link_libraries(stereoVIOoakd PUBLIC kimera_vio::kimera_vio)
+#target_link_libraries(stereoVIOoakdLIVE PUBLIC kimera_vio::kimera_vio)
+#target_link_libraries(OakdTest PUBLIC kimera_vio::kimera_vio)
 
 ############################### TESTS ##########################################
 ### Add testing
@@ -314,15 +314,15 @@ if(KIMERA_BUILD_TESTS)
   )
   target_include_directories(testKimeraVIO PUBLIC tests/include 
     /usr/include/opencv4
-    /home/smartslab/dai_ws/depthai-core/include
-    /home/smartslab/dai_ws/depthai-core/
-    /home/smartslab/dai_ws/depthai-core/shared/depthai-shared/include
-    /home/smartslab/dai_ws/depthai-core/shared/depthai-bootloader-shared/include
-    /home/smartslab/dai_ws/depthai-core/shared/depthai-shared/3rdparty
+    /home/smartslab/catkin_ws/depthai/depthai-core/include
+    /home/smartslab/catkin_ws/depthai/depthai-core/
+    /home/smartslab/catkin_ws/depthai/depthai-core/shared/depthai-shared/include
+    /home/smartslab/catkin_ws/depthai/depthai-core/shared/depthai-bootloader-shared/include
+    /home/smartslab/catkin_ws/depthai/depthai-core/shared/depthai-shared/3rdparty
     /home/smartslab/.hunter/_Base/16cc954/a3a48bb/d8f4da9/Install/include
-    /home/smartslab/dai_ws/depthai-core/build 
-    /home/smartslab/dai_ws/depthai-core/build/install/include
-    /home/smartslab/dai_ws/depthai-core/build/install/lib
+    /home/smartslab/catkin_ws/depthai/depthai-core/build 
+    /home/smartslab/catkin_ws/depthai/depthai-core/build/install/include
+    /home/smartslab/catkin_ws/depthai/depthai-core/build/install/lib
     ${depthai_DIR})
   target_link_libraries(testKimeraVIO gtest gmock kimera_vio::kimera_vio depthai::opencv libnop)
 

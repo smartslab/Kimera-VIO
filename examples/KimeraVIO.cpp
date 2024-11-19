@@ -22,9 +22,9 @@
 #include <utility>
 
 #include "kimera-vio/dataprovider/EurocDataProvider.h"
-#include "kimera-vio/dataprovider/OakdDataProvider.h"
+//#include "kimera-vio/dataprovider/OakdDataProvider.h"
 #include "kimera-vio/dataprovider/KittiDataProvider.h"
-#include "kimera-vio/dataprovider/LiveDataProvider.h"
+//#include "kimera-vio/dataprovider/LiveDataProvider.h"
 #include "kimera-vio/frontend/StereoImuSyncPacket.h"
 #include "kimera-vio/logging/Logger.h"
 #include "kimera-vio/pipeline/MonoImuPipeline.h"
@@ -73,12 +73,12 @@ int main(int argc, char* argv[]) {
     case 1: {
       dataset_parser = std::make_unique<VIO::KittiDataProvider>();
     } break;
-    case 2: {
-      dataset_parser = std::make_unique<VIO::OakdDataProvider>(vio_params);
-    } break;
-    case 3: {
-      dataset_parser = std::make_unique<VIO::LiveDataProvider>(vio_params);
-    } break;
+    //case 2: {
+    //  dataset_parser = std::make_unique<VIO::OakdDataProvider>(vio_params);
+    //} break;
+    //case 3: {
+    //  dataset_parser = std::make_unique<VIO::LiveDataProvider>(vio_params);
+    //} break;
     default: {
       LOG(FATAL) << "Unrecognized dataset type: " << FLAGS_dataset_type << "."
                  << " 0: EuRoC, 1: Kitti.";

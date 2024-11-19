@@ -9,8 +9,8 @@ target_sources(kimera_vio
     "${CMAKE_CURRENT_LIST_DIR}/StereoDataProviderModule.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/EurocDataProvider.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/KittiDataProvider.cpp"
-    "${CMAKE_CURRENT_LIST_DIR}/OakdDataProvider.cpp"
-    "${CMAKE_CURRENT_LIST_DIR}/LiveDataProvider.cpp"
-    "${CMAKE_CURRENT_LIST_DIR}/OakdSpinner.cpp"
+    #"${CMAKE_CURRENT_LIST_DIR}/OakdDataProvider.cpp"
+    #"${CMAKE_CURRENT_LIST_DIR}/LiveDataProvider.cpp"
+    #"${CMAKE_CURRENT_LIST_DIR}/OakdSpinner.cpp"
 
 )

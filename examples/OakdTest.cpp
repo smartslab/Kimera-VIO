@@ -4,7 +4,7 @@
 #include "depthai/depthai.hpp"
 #include <cstdio>
 #include <stdlib.h>
-#include "kimera-vio/dataprovider/OakdSpinner.h"
+#include "../kimera-vio/src/dataprovider/OakdSpinner.h"
 
 
 int main(){

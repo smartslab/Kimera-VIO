@@ -6,8 +6,8 @@ target_sources(kimera_vio PRIVATE
   "${CMAKE_CURRENT_LIST_DIR}/RgbdDataProviderModule.h"
   "${CMAKE_CURRENT_LIST_DIR}/DataProviderInterface.h"
   "${CMAKE_CURRENT_LIST_DIR}/EurocDataProvider.h"
-  "${CMAKE_CURRENT_LIST_DIR}/OakdDataProvider.h"
-  "${CMAKE_CURRENT_LIST_DIR}/LiveDataProvider.h"
+  #"${CMAKE_CURRENT_LIST_DIR}/OakdDataProvider.h"
+  #"${CMAKE_CURRENT_LIST_DIR}/LiveDataProvider.h"
   # "${CMAKE_CURRENT_LIST_DIR}/KittiDataProvider.h"
-  "${CMAKE_CURRENT_LIST_DIR}/OakdSpinner.h"
+  #"${CMAKE_CURRENT_LIST_DIR}/OakdSpinner.h"
   )
